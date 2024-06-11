@@ -85,6 +85,8 @@ def execute_query(query):
         df = pd.DataFrame(data, columns=columns)
         return df
     else:
+        results = athena_client.get_query_results(QueryExecutionId=query_execution_id)
+        print(results)
         raise Exception("Query execution failed.")
 
 @st.cache_data
@@ -125,7 +127,7 @@ def get_permissions_from_lf(table_data):
 def get_sp_from_athena(table_data):
     print(table_data)
     table_name = table_data.split('-')[1]
-    query_sp = f"SELECT sp FROM {database_tracing}.{sp_info } where \"table\"='{table_name.lower()}' "
+    query_sp = f"SELECT sp FROM {database_tracing}.{sp_info} where \"table\"='{table_name.lower()}' "
     sp_data = execute_query(query_sp)
 
     print(sp_data)
