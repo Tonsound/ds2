@@ -15,9 +15,7 @@ output_bucket = 's3://br-dm-prod-us-east-1-837538682169-athena/'
 # And the root-level secrets are also accessible as environment variables:
 
 
-aws_access_key_id = st.secrets["AWS_ACCESS_KEY_ID"]
-aws_secret_access_key = st.secrets["AWS_SECRET_ACCESS_KEY"]
-aws_session_token = st.secrets["AWS_SESSION_TOKEN"] 
+
 
 # Athena configuration
 database_tracing = 'br_dm_prod_bigdata_analytics_tracing_db'
@@ -35,6 +33,9 @@ if prod == True:
     iam_client = boto3.client('iam')
     client_lf = boto3.client('lakeformation')
 else:
+    aws_access_key_id = st.secrets["AWS_ACCESS_KEY_ID"]
+    aws_secret_access_key = st.secrets["AWS_SECRET_ACCESS_KEY"]
+    aws_session_token = st.secrets["AWS_SESSION_TOKEN"] 
     athena_client = boto3.client('athena', aws_access_key_id=aws_access_key_id,
                              aws_secret_access_key=aws_secret_access_key,aws_session_token=aws_session_token,
                              region_name=region_name)
@@ -166,7 +167,6 @@ if table_data:
 
     data_load_state.text("Listo! (usando st.cache_data)")
 
-    data_load_state.text("Listo! (usando st.cache_data)")
 
     if st.checkbox('Mostrar data'):
         st.subheader('Listado')
@@ -179,6 +179,7 @@ if table_data:
     data_load_state = st.text('Cargando data actualizacion...')
 
     load_data = get_update_from_athena(table_data)
+    data_load_state.text("Listo! (usando st.cache_data)")
     print(load_data)
     st.write(f"La ultima vez que se actualizó fue: {load_data.to_dict()['load_timestamp'][0]}")
 

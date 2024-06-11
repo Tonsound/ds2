@@ -9,9 +9,7 @@ output_bucket = 's3://br-dm-prod-us-east-1-837538682169-athena/'
 rol_prueba = 'arn:aws:iam::837538682169:role/ROLE-BR-PROD-COBRANZAS-DATACATALOG-REDSHIFT'
 
 
-aws_access_key_id = st.secrets["AWS_ACCESS_KEY_ID"]
-aws_secret_access_key = st.secrets["AWS_SECRET_ACCESS_KEY"]
-aws_session_token = st.secrets["AWS_SESSION_TOKEN"] 
+ 
 
 
 
@@ -33,6 +31,9 @@ if prod == True:
     client_lf = boto3.client('lakeformation')
     glue_client = boto3.client('glue')
 else:
+    aws_access_key_id = st.secrets["AWS_ACCESS_KEY_ID"]
+    aws_secret_access_key = st.secrets["AWS_SECRET_ACCESS_KEY"]
+    aws_session_token = st.secrets["AWS_SESSION_TOKEN"]
     athena_client = boto3.client('athena', aws_access_key_id=aws_access_key_id,
                              aws_secret_access_key=aws_secret_access_key,aws_session_token=aws_session_token,
                              region_name=region_name)
