@@ -30,8 +30,7 @@ prod = True
 
 if prod == True:
     athena_client = boto3.client('athena', region_name=region_name)
-    iam_client = boto3.client('iam')
-    client_lf = boto3.client('lakeformation')
+    client_lf = boto3.client('lakeformation', region_name=region_name)
 else:
     aws_access_key_id = st.secrets["AWS_ACCESS_KEY_ID"]
     aws_secret_access_key = st.secrets["AWS_SECRET_ACCESS_KEY"]
