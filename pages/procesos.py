@@ -110,5 +110,8 @@ gluejobs_fallados = glue_jobs_data[glue_jobs_data['jobrunstate']=='FAILED']
 data_load_state = st.text("Listo!")
 
 with tab1:
-    page_number = st.number_input('Select page', min_value=1, max_value=len(glue_jobs_data), step=1, value=40)
+    page_number = st.number_input('¿Cuantos quieres ver?', min_value=1, max_value=len(glue_jobs_data), step=1, value=40)
     st.table(gluejobs_fallados[0:page_number][['startedon', 'jobname', 'id', 'cost']])
+with tab3:
+    page_number2 = st.number_input('¿Cuantos quieres ver?', min_value=1, max_value=len(glue_jobs_data), step=1, value=40)
+    st.table(glue_jobs_data[0:page_number2][['startedon', 'jobname', 'id', 'cost']])
