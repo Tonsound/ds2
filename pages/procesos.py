@@ -59,7 +59,7 @@ c1, c2, c3, _ = st.columns([1,1,1,2])
 
 data_load_state = st.text('Cargando info...')
 
-query = f"""select * from {database_tracing}.{table_jobs} where startedon >= {corte_str}""" 
+query = f"SELECT * FROM {database_tracing}.{table_jobs} WHERE startedon >= DATE({corte_str})"
  
 glue_jobs_data = execute_query(query, database_tracing, output_bucket)
 glue_jobs_data = glue_jobs_data.sort_values(by='startedon', ascending=False)
@@ -71,5 +71,4 @@ data_load_state = st.text("Listo!")
 with c1:
     st.title('Fallados')
     page_number = st.number_input('Select page', min_value=1, max_value=len(gluejobs_fallados), step=1, value=40)
-
     st.table(gluejobs_fallados[0:page_number][['startedon', 'jobname', 'id', 'cost']])
