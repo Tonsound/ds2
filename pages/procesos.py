@@ -111,5 +111,5 @@ data_load_state = st.text("Listo!")
 
 with c1:
     st.title('Fallados')
-    page_number = st.number_input('Select page', min_value=1, max_value=len(gluejobs_fallados), step=1, value=40)
+    page_number = st.number_input('Select page', min_value=1, max_value=len(glue_jobs_data), step=1, value=40)
     st.table(gluejobs_fallados[0:page_number][['startedon', 'jobname', 'id', 'cost']])
