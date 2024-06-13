@@ -23,8 +23,7 @@ def execute_query(query, database, output):
     response = athena_client.start_query_execution(
         QueryString=query,
         QueryExecutionContext={'Database': database},
-        ResultConfiguration={'OutputLocation': output}
-    )
+        ResultConfiguration={'OutputLocation': output})
     # Get query execution ID
     query_execution_id = response['QueryExecutionId']
     # Poll until query execution is complete
