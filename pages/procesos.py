@@ -105,7 +105,7 @@ print(query)
 glue_jobs_data = execute_query(query, database_tracing, output_bucket)
 glue_jobs_data = glue_jobs_data.sort_values(by='startedon', ascending=False)
 print('semi ok')
-gluejobs_fallados = glue_jobs_data[glue_jobs_data['status']=='FAILED']
+gluejobs_fallados = glue_jobs_data[glue_jobs_data['jobrunstate']=='FAILED']
  
 data_load_state = st.text("Listo!")
 
