@@ -95,7 +95,7 @@ def execute_query(query, database, output):
 st.title('Info sobre Gluejobs')
 
 st.subheader('Filtros')
-c1, c2, c3, _ = st.columns([1,1,1,2])
+tab1, tab2 = st.tabs(['Jobs Fallados',  '📋 Costos', 'Recientes'])
 
 data_load_state = st.text('Cargando info...')
 print(corte_str)
@@ -109,7 +109,6 @@ gluejobs_fallados = glue_jobs_data[glue_jobs_data['jobrunstate']=='FAILED']
  
 data_load_state = st.text("Listo!")
 
-with c1:
-    st.title('Fallados')
+with tab1:
     page_number = st.number_input('Select page', min_value=1, max_value=len(glue_jobs_data), step=1, value=40)
     st.table(gluejobs_fallados[0:page_number][['startedon', 'jobname', 'id', 'cost']])
