@@ -16,6 +16,7 @@ client_lf = boto3.client('lakeformation', region_name=region_name)
 glue_client = boto3.client('glue', region_name=region_name)
 
 corte = datetime.now().replace(day=1) - timedelta(days=120)
+corte_str = corte.strftime('%Y-%m-%d')
 
 
 
@@ -58,7 +59,7 @@ c1, c2, c3, _ = st.columns([1,1,1,2])
 
 data_load_state = st.text('Cargando info...')
 
-query = f"""select * from {database_tracing}.{table_jobs} where startedon >= {corte}""" 
+query = f"""select * from {database_tracing}.{table_jobs} where startedon >= {corte_str}""" 
  
 glue_jobs_data = execute_query(query, database_tracing, output_bucket)
 glue_jobs_data = glue_jobs_data.sort_values(by='startedon', ascending=False)
