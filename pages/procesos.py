@@ -95,7 +95,7 @@ def execute_query(query, database, output):
 st.title('Info sobre Gluejobs')
 
 st.subheader('Filtros')
-tab1, tab2 = st.tabs(['Jobs Fallados',  '📋 Costos', 'Recientes'])
+tab1, tab2, tab3 = st.tabs(['Jobs Fallados',  '📋 Costos', 'Recientes'])
 
 data_load_state = st.text('Cargando info...')
 print(corte_str)
