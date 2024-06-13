@@ -60,6 +60,7 @@ c1, c2, c3, _ = st.columns([1,1,1,2])
 data_load_state = st.text('Cargando info...')
 print(corte_str)
 query = f"SELECT * FROM {database_tracing}.{table_jobs} WHERE startedon >= DATE({corte_str})"
+print(query)
  
 glue_jobs_data = execute_query(query, database_tracing, output_bucket)
 glue_jobs_data = glue_jobs_data.sort_values(by='startedon', ascending=False)
