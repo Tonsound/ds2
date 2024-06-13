@@ -58,7 +58,7 @@ c1, c2, c3, _ = st.columns([1,1,1,2])
 
 data_load_state = st.text('Cargando info...')
 
-query = """select * from {database_tracing}.{table_jobs} where startedon >= {corte}""" 
+query = f"""select * from {database_tracing}.{table_jobs} where startedon >= {corte}""" 
  
 glue_jobs_data = execute_query(query, database_tracing, output_bucket)
 glue_jobs_data = glue_jobs_data.sort_values(by='startedon', ascending=False)
