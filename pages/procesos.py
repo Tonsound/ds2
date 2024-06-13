@@ -19,12 +19,12 @@ corte = datetime.now().replace(day=1) - timedelta(days=120)
 corte_str = corte.strftime('%Y-%m-%d')
 
 
-
 def execute_query(query, database, output):
     response = athena_client.start_query_execution(
         QueryString=query,
         QueryExecutionContext={'Database': database},
-        ResultConfiguration={'OutputLocation': output})
+        ResultConfiguration={'OutputLocation': output}
+    )
     # Get query execution ID
     query_execution_id = response['QueryExecutionId']
     # Poll until query execution is complete
@@ -42,7 +42,16 @@ def execute_query(query, database, output):
         # Parse data
         data = []
         for row in results['ResultSet']['Rows'][1:]:  # skip the header row
-            values = [column['VarCharValue'] for column in row['Data']]
+            values = []
+            for column in row['Data']:
+                if 'VarCharValue' in column:
+                    values.append(column['VarCharValue'])
+                elif 'BigIntValue' in column:
+                    values.append(column['BigIntValue'])
+                elif 'DoubleValue' in column:
+                    values.append(column['DoubleValue'])
+                else:
+                    values.append(None)  # or handle the unknown types as needed
             data.append(values)
         # Create DataFrame
         df = pd.DataFrame(data, columns=columns)
@@ -51,6 +60,37 @@ def execute_query(query, database, output):
         results = athena_client.get_query_results(QueryExecutionId=query_execution_id)
         print(results)
         raise Exception("Query execution failed.")
+# def execute_query(query, database, output):
+#     response = athena_client.start_query_execution(
+#         QueryString=query,
+#         QueryExecutionContext={'Database': database},
+#         ResultConfiguration={'OutputLocation': output})
+#     # Get query execution ID
+#     query_execution_id = response['QueryExecutionId']
+#     # Poll until query execution is complete
+#     while True:
+#         query_execution = athena_client.get_query_execution(QueryExecutionId=query_execution_id)
+#         status = query_execution['QueryExecution']['Status']['State']
+#         if status in ['SUCCEEDED', 'FAILED', 'CANCELLED']:
+#             break
+#         time.sleep(1)  # Wait for 1 second before checking again
+#     if status == 'SUCCEEDED':
+#         # Get results
+#         results = athena_client.get_query_results(QueryExecutionId=query_execution_id)
+#         # Parse columns
+#         columns = [column['VarCharValue'] for column in results['ResultSet']['Rows'][0]['Data']]
+#         # Parse data
+#         data = []
+#         for row in results['ResultSet']['Rows'][1:]:  # skip the header row
+#             values = [column['VarCharValue'] for column in row['Data']]
+#             data.append(values)
+#         # Create DataFrame
+#         df = pd.DataFrame(data, columns=columns)
+#         return df
+#     else:
+#         results = athena_client.get_query_results(QueryExecutionId=query_execution_id)
+#         print(results)
+#         raise Exception("Query execution failed.")
 
 st.title('Info sobre Gluejobs')
 
@@ -64,7 +104,7 @@ print(query)
  
 glue_jobs_data = execute_query(query, database_tracing, output_bucket)
 glue_jobs_data = glue_jobs_data.sort_values(by='startedon', ascending=False)
-
+print('semi ok')
 gluejobs_fallados = glue_jobs_data[glue_jobs_data['status']=='FAILED']
  
 data_load_state = st.text("Listo!")
