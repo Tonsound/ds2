@@ -3,6 +3,7 @@ import boto3
 import pandas as pd
 import time
 from datetime import datetime, timedelta
+import calendar
 
 region_name= 'us-east-1'
 region_name =  'us-east-1'
@@ -19,7 +20,8 @@ corte = datetime.now().replace(day=1) - timedelta(days=120)
 mes_grafico = corte.strftime('%m')
 ano_grafico = corte.strftime('%Y')
 corte_str = corte.strftime('%Y-%m-%d')
-
+dia_hoy = corte = datetime.now().day
+dias_del_mes = calendar.monthrange(datetime.now().year, datetime.now().month)[1]
 
 def execute_query(query, database, output):
     response = athena_client.start_query_execution(
@@ -119,6 +121,8 @@ with tab2:
     data_grafico = execute_query(query_grafico, database_tracing, output_bucket)
     data_grafico = data_grafico.sort_values(by='fecha', ascending=False)
     data_grafico['suma_costos'] = pd.to_numeric(data_grafico['suma_costos'])
+    proyeccion_costos = (dias_del_mes - dia_hoy) * data_grafico[0:4]['suma_costos'].mean() + data_grafico[0:dia_hoy]['suma_costos']
+    st.markdown(f"Se proyecta para este mes un gasto de: {proyeccion_costos}")
     st.line_chart(data=data_grafico, x='fecha', y='suma_costos')
 with tab3:
     page_number2 = st.number_input('¿Cuantos quieres ver?', min_value=1, max_value=len(glue_jobs_data), step=1, value=40, key="tab3_number_input")
