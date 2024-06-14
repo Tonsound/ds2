@@ -121,7 +121,7 @@ with tab2:
     data_grafico = execute_query(query_grafico, database_tracing, output_bucket)
     data_grafico = data_grafico.sort_values(by='fecha', ascending=False)
     data_grafico['suma_costos'] = pd.to_numeric(data_grafico['suma_costos'])
-    proyeccion_costos = (dias_del_mes - dia_hoy) * data_grafico[0:4]['suma_costos'].mean() + data_grafico[0:dia_hoy]['suma_costos']
+    proyeccion_costos = ((dias_del_mes - dia_hoy) * data_grafico[0:4]['suma_costos'].mean()) + data_grafico[0:dia_hoy]['suma_costos'].sum()
     st.markdown(f"Se proyecta para este mes un gasto de: {proyeccion_costos}")
     st.line_chart(data=data_grafico, x='fecha', y='suma_costos')
 with tab3:
