@@ -118,6 +118,7 @@ with tab2:
     print(query_grafico)
     data_grafico = execute_query(query_grafico, database_tracing, output_bucket)
     data_grafico = data_grafico.sort_values(by='fecha', ascending=False)
+    data_grafico['suma_costos'] = pd.to_numeric(data_grafico['suma_costos'])
     st.line_chart(data=data_grafico, x='fecha', y='suma_costos')
 with tab3:
     page_number2 = st.number_input('¿Cuantos quieres ver?', min_value=1, max_value=len(glue_jobs_data), step=1, value=40, key="tab3_number_input")
