@@ -113,7 +113,7 @@ gluejobs_fallados = glue_jobs_data[glue_jobs_data['jobrunstate']=='FAILED']
 data_load_state = st.text("Listo!")
 
 with tab1:
-    page_number = st.number_input('¿Cuantos quieres ver?', min_value=1, max_value=len(gluejobs_fallados), step=1, value=20, key="tab1_number_input")
+    page_number = st.number_input('¿Cuantos quieres ver?', min_value=1, max_value=len(gluejobs_fallados), step=1, value=len(gluejobs_fallados), key="tab1_number_input")
     st.table(gluejobs_fallados[0:page_number][['startedon', 'jobname', 'id', 'cost']])
 with tab2:
     query_grafico = f"SELECT sum(cost) as suma_costos, concat(cast(year as varchar), '-', lpad(cast(month as varchar),2, '0'), '-', LPAD(CAST(day AS VARCHAR), 2, '0')) as fecha FROM {database_tracing}.{table_jobs} where month >= {mes_grafico} and year ={ano_grafico} group by concat(cast(year as varchar), '-', lpad(cast(month as varchar),2, '0'), '-', LPAD(CAST(day AS VARCHAR), 2, '0'))  order by concat(cast(year as varchar), '-', lpad(cast(month as varchar),2, '0'), '-', LPAD(CAST(day AS VARCHAR), 2, '0'))  asc;"
