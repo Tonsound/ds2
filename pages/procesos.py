@@ -16,6 +16,8 @@ client_lf = boto3.client('lakeformation', region_name=region_name)
 glue_client = boto3.client('glue', region_name=region_name)
 
 corte = datetime.now().replace(day=1) - timedelta(days=120)
+mes_grafico = corte.strftime('%m')
+ano_grafico = corte.strftime('%Y')
 corte_str = corte.strftime('%Y-%m-%d')
 
 
@@ -100,7 +102,6 @@ tab1, tab2, tab3 = st.tabs(['Jobs Fallados',  '📋 Costos', 'Recientes'])
 data_load_state = st.text('Cargando info...')
 
 query = f"SELECT * FROM {database_tracing}.{table_jobs} WHERE startedon >= DATE('{corte_str}')"
-
  
 glue_jobs_data = execute_query(query, database_tracing, output_bucket)
 glue_jobs_data = glue_jobs_data.sort_values(by='startedon', ascending=False)
@@ -112,6 +113,12 @@ data_load_state = st.text("Listo!")
 with tab1:
     page_number = st.number_input('¿Cuantos quieres ver?', min_value=1, max_value=len(gluejobs_fallados), step=1, value=20, key="tab1_number_input")
     st.table(gluejobs_fallados[0:page_number][['startedon', 'jobname', 'id', 'cost']])
+with tab2:
+    query_grafico = f"SELECT sum(cost) as suma_costos, concat(cast(year as varchar), '-', lpad(cast(month as varchar),2, '0'), '-', LPAD(CAST(day AS VARCHAR), 2, '0')) as fecha FROM {database_tracing}.{table_jobs} where month >= {mes_grafico} and year ={ano_grafico} group by concat(cast(year as varchar), '-', lpad(cast(month as varchar),2, '0'), '-', LPAD(CAST(day AS VARCHAR), 2, '0'))  order by concat(cast(year as varchar), '-', lpad(cast(month as varchar),2, '0'), '-', LPAD(CAST(day AS VARCHAR), 2, '0'))  asc;"
+    print(query_grafico)
+    data_grafico = execute_query(query_grafico, database_tracing, output_bucket)
+    data_grafico = data_grafico.sort_values(by='fecha', ascending=False)
+    st.line_chart(data=data_grafico, x='fecha', y='suma_costos')
 with tab3:
     page_number2 = st.number_input('¿Cuantos quieres ver?', min_value=1, max_value=len(glue_jobs_data), step=1, value=40, key="tab3_number_input")
     st.table(glue_jobs_data[0:page_number2][['startedon', 'jobname', 'id', 'cost']])
